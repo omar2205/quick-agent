@@ -3,6 +3,7 @@ dotenv.load_dotenv()
 
 import os
 import asyncio
+import json
 from rich import print
 
 from langchain_openai import ChatOpenAI
@@ -42,8 +43,14 @@ async def main():
     traceback.print_exc()
     print(f"Error: {e}")
 
+
 if __name__ == "__main__":
   try:
+    if os.path.exists("./servers.json"):
+      with open("./servers.json", "r") as f:
+        _servers = json.load(f)
+        print("Found servers.json, updating servers...")
+        MCP_SERVERS.update(_servers)
     asyncio.run(main())
   except (KeyboardInterrupt, EOFError):
     print("\nExiting...")
