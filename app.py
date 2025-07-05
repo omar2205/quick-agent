@@ -18,7 +18,7 @@ MCP_SERVERS = {}
 
 async def main():
   try:
-    model = ChatOpenAI(model="gpt-4-turbo", api_key=OPENAI_KEY)
+    model = ChatOpenAI(model="gpt-4.1-2025-04-14", api_key=OPENAI_KEY)
     client = MultiServerMCPClient(MCP_SERVERS)
     tools = await client.get_tools()
     print('tools', tools)
