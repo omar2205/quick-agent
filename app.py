@@ -11,22 +11,31 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
 from prompt_toolkit import PromptSession
+from prompt_toolkit.styles import Style
 
 OPENAI_KEY = os.environ.get("OPENAI_KEY")
+# OPENAI_MODEL = "gpt-4.1-2025-04-14"
+OPENAI_MODEL = "gpt-4.1-mini-2025-04-14"
 
 MCP_SERVERS = {}
 
 async def main():
   try:
-    model = ChatOpenAI(model="gpt-4.1-2025-04-14", api_key=OPENAI_KEY)
+    model = ChatOpenAI(model=OPENAI_MODEL, api_key=OPENAI_KEY)
     client = MultiServerMCPClient(MCP_SERVERS)
     tools = await client.get_tools()
-    print('tools', tools)
+    print('Tools:')
+    for t in tools:
+      print('  ', f"'{t.name}'", t.description)
 
     memory = MemorySaver()
     agent = create_react_agent(model, tools, checkpointer=memory)
     config = {"configurable": {"thread_id": "1"}}
-    session = PromptSession()
+    custom_style = Style.from_dict({
+      'prompt': 'ansibrightblue',
+      '': 'ansibrightblue',
+    })
+    session = PromptSession(style=custom_style)
 
     while True:
       user_input = await session.prompt_async("You: ")
